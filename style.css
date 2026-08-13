@@ -392,6 +392,11 @@ label {
     line-height: 1.4;
 }
 
+/* Signals that hovering explains why this landed in this tier. */
+.pill.has-evidence {
+    cursor: help;
+}
+
 .pill-strong {
     background-color: var(--bg-skill-strong);
     color: var(--font-skill-strong);

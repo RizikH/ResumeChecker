@@ -160,9 +160,22 @@ function addSkillGroup(heading, skills, modifier) {
   pills.className = "pills";
 
   for (const skill of skills) {
+    // Older saved results stored plain strings; newer ones carry the evidence
+    // behind the judgement alongside the label.
+    const label = typeof skill === "string" ? skill : skill?.label;
+    const evidence = typeof skill === "string" ? "" : skill?.evidence;
+    if (!label) continue;
+
     const pill = document.createElement("span");
     pill.className = `pill ${modifier}`;
-    pill.textContent = skill;
+    pill.textContent = label;
+
+    if (evidence) {
+      // An attribute, not markup, so there's nothing here to inject into.
+      pill.title = evidence;
+      pill.classList.add("has-evidence");
+    }
+
     pills.append(pill);
   }
 
