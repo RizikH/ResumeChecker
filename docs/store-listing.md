@@ -112,17 +112,30 @@ No. All code is included in the package. The only third-party library, Mozilla's
 
 Answer these consistently with PRIVACY.md. Reviewers do compare them.
 
-| Question | Answer |
+| Category | Tick? | Why |
+|---|---|---|
+| Personally identifiable information | **Yes** | The resume — name, email, phone, address |
+| Authentication information | **Yes** | The Anthropic API key is a credential |
+| Website content | **Yes** | The job description, read only when the icon is clicked |
+| Health, financial, personal communications, location, user activity | No | None are touched |
+| Web history | No — but see below | |
+
+| Certification | Answer |
 |---|---|
-| Collects personally identifiable information | **Yes** — the resume the user provides |
-| Collects health, financial, authentication, personal communications, location, web history, or user activity | **No** |
-| Collects website content | **Yes** — the job description on the page, only when the user clicks the icon |
 | Sold to third parties | **No** |
 | Used or transferred for purposes unrelated to the core function | **No** |
 | Used to determine creditworthiness or for lending | **No** |
 
-The resume counts as personal information. Declaring it is not optional, and
-under-declaring is the most common reason a listing is rejected.
+Under-declaring is the most common reason a listing is rejected, and
+over-declaring costs nothing. The resume is plainly personal information, and
+the API key is plainly a credential — an extension that asks for one on its
+first screen and declares no authentication data reads as an inconsistency.
+
+**Web history is arguable.** The result cache holds up to 20 job posting
+addresses with timestamps. It never leaves the device, and it only covers
+pages where the user deliberately clicked the icon, so it is a result cache
+rather than a record of browsing — which is why it is left unticked. Ticking
+it is the safer call if a reviewer ever queries it.
 
 Privacy policy URL — must return a real page, not a 404. Either works:
 
