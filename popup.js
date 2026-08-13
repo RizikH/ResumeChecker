@@ -218,7 +218,7 @@ function renderRun(run) {
 
 // ---------- Running a match ----------
 
-async function startMatch(jobKey, jobText) {
+async function startMatch(jobKey, jobText, force = false) {
   el.rerun.classList.add("hidden");
   el.fixKey.classList.add("hidden");
   showState("state-loading");
@@ -226,7 +226,7 @@ async function startMatch(jobKey, jobText) {
   // Not waited on: the answer arrives through storage, and waiting here would
   // only report a failure if the connection dropped while the check was
   // running perfectly well.
-  chrome.runtime.sendMessage({ type: "RUN_MATCH", jobKey, jobText }).catch(() => {
+  chrome.runtime.sendMessage({ type: "RUN_MATCH", jobKey, jobText, force }).catch(() => {
     renderError("Couldn't start the check. Try again.");
   });
 }
@@ -263,7 +263,10 @@ function showResumeScreen(resume) {
 
 // The screen shown depends only on what is saved, so calling this again after
 // any change always lands on the right one.
-async function route() {
+// `force` skips every saved result and always checks again. It exists so the
+// Check again button works even if clearing the old result didn't — the
+// button's job is to produce a fresh answer, not to depend on a delete.
+async function route({ force = false } = {}) {
   const [apiKey, resume] = await Promise.all([
     read(KEYS.apiKey),
     read(KEYS.resume),
@@ -285,12 +288,20 @@ async function route() {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   const runs = (await read("runs")) ?? {};
 
+  // A saved result is only worth showing if it came from the resume that is
+  // saved now. Replace the resume and every earlier result is out of date,
+  // so it gets checked again rather than shown.
+  const isCurrent = (entry) =>
+    entry?.status === "done" &&
+    entry.resumeSavedAt != null &&
+    entry.resumeSavedAt === resume.savedAt;
+
   // The web address alone is enough to name the job, so a saved result can be
   // shown without reading the page at all — which is what happens whenever
   // someone reopens a posting they already checked.
-  if (tab?.url) {
+  if (!force && tab?.url) {
     const cached = runs[normalizeJobKey(tab.url)];
-    if (cached?.status === "done") {
+    if (isCurrent(cached)) {
       currentJobKey = normalizeJobKey(tab.url);
       renderResult(cached);
       return;
@@ -310,19 +321,19 @@ async function route() {
   // On sites that swap jobs without reloading, the address the browser
   // reports can lag behind the job actually on screen — so this is checked
   // again using the address the page itself reported.
-  if (existing?.status === "done") {
+  if (!force && isCurrent(existing)) {
     renderResult(existing);
     return;
   }
 
   // Already running, so wait for it to finish — unless it was interrupted,
   // in which case no answer is coming and it has to start again.
-  if (existing?.status === "pending") {
+  if (!force && existing?.status === "pending") {
     const stale = Date.now() - existing.updatedAt > STALE_PENDING_MS;
     if (!stale) return;
   }
 
-  startMatch(currentJobKey, job.text);
+  startMatch(currentJobKey, job.text, force);
 }
 
 // ---------- Screen 1: API key ----------
@@ -412,6 +423,11 @@ async function saveResume() {
 
   // A chosen file wins over pasted text, because the PDF keeps its layout
   // and gives a better match.
+  // savedAt stamps which version of the resume this is. Saved results record
+  // the stamp they were produced from, so a result from an older resume is
+  // recognised as out of date and checked again instead of being shown.
+  const savedAt = Date.now();
+
   if (file) {
     try {
       const data = await readFileAsBase64(file);
@@ -420,6 +436,7 @@ async function saveResume() {
         name: file.name,
         mediaType: "application/pdf",
         data,
+        savedAt,
       });
     } catch (error) {
       // Catches an unreadable file and a full storage area alike. The second
@@ -433,7 +450,7 @@ async function saveResume() {
       return;
     }
   } else if (text) {
-    await write(KEYS.resume, { kind: "text", text });
+    await write(KEYS.resume, { kind: "text", text, savedAt });
   } else {
     showError(el.resumeError, "Upload a PDF or paste your resume text.");
     return;
@@ -465,17 +482,18 @@ el.openSettings.addEventListener("click", async () => {
 el.rerun.addEventListener("click", async () => {
   if (!currentJobKey) return;
 
+  // Best effort. If this fails the check still runs, because route is told to
+  // ignore saved results — the button must never be blocked by a delete.
   try {
     await chrome.runtime.sendMessage({
       type: "CLEAR_RUN",
       jobKey: currentJobKey,
     });
   } catch (error) {
-    renderError("Couldn't start the check. Try again.");
-    return;
+    console.warn("Could not clear the saved result:", error);
   }
 
-  await route();
+  await route({ force: true });
 });
 
 // ---------- Reset ----------

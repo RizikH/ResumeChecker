@@ -104,16 +104,22 @@ async function readRuns() {
 let runsQueue = Promise.resolve();
 
 function updateRuns(mutate) {
+  // Nothing in here may throw. A rejected promise would stay at the head of
+  // the queue and every later save would silently never run.
   runsQueue = runsQueue.then(async () => {
-    const runs = await readRuns();
-    const next = mutate(runs) ?? runs;
-
     try {
+      const runs = await readRuns();
+      const next = mutate(runs) ?? runs;
       await chrome.storage.local.set({ runs: next });
     } catch (error) {
-      // Out of storage space. Clearing old results is better than failing.
+      // Usually out of storage space. Clearing old results is better than
+      // leaving the user with no answer at all.
       console.warn("Could not save results, clearing old ones:", error);
-      await chrome.storage.local.set({ runs: {} });
+      try {
+        await chrome.storage.local.set({ runs: {} });
+      } catch (fallbackError) {
+        console.error("Could not clear results either:", fallbackError);
+      }
     }
   });
 
@@ -318,6 +324,9 @@ async function runMatch(jobKey, jobText) {
 
     await writeRun(jobKey, {
       status: "done",
+      // Records which resume produced this, so the popup can tell that a
+      // saved result predates a resume the user has since replaced.
+      resumeSavedAt: resume.savedAt ?? null,
       score: Number.isFinite(score)
         ? Math.max(0, Math.min(100, Math.round(score)))
         : 0,
@@ -364,8 +373,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const existing = runs[message.jobKey];
 
     // Reopening the popup while a check is running must not start a second
-    // one — that would be paid for twice.
+    // one — that would be paid for twice. Pressing Check again is different:
+    // the user asked for it, so it goes ahead regardless.
     const stillRunning =
+      !message.force &&
       existing?.status === "pending" &&
       Date.now() - existing.updatedAt < PENDING_TIMEOUT_MS;
 
