@@ -37,9 +37,15 @@ One entry for every requirement the posting states, then a score.
 
 Work through the posting in order — required qualifications, then preferred ones, then any requirement stated in the responsibilities — and write one entry for each. For each entry, in this order:
 
-1. **requirement** — the posting's own wording, trimmed to a readable label. Take it from the posting; do not invent a theme and do not join two requirements together. "Experience with Java development" is a requirement. "Backend service design with clear contracts" is a theme you made up.
-2. **evidence** — where in the resume the support is. A short clause, about ten words: name the project, role or section, and what it shows there. "iHive: Node/Express, 15+ REST endpoints" — not a sentence, not an argument. If nothing supports it, say so in as few words. Never invent an employer, a job title, or a duration; if it is not in the resume, it did not happen.
-3. **tier** — which follows from the evidence you just wrote.
+1. **requirement** — the posting's own wording. Take it from the posting; do not invent a theme and do not join two requirements together. "Experience with Java development" is a requirement. "Backend service design with clear contracts" is a theme you made up.
+2. **label** — the same thing as a tag: the skill, technology or credential itself, one to three words. This is what the user sees, so it must read like an item on a skills list, not a sentence.
+   - "Experience with Java development" → "Java"
+   - "Familiarity with SQL and relational databases" → "SQL"
+   - "Bachelor's degree in Computer Science or related field" → "CS degree"
+   - "Experience working within Agile development environments" → "Agile"
+   - "Cross-functional collaboration with product and design" → "Cross-team collaboration"
+3. **evidence** — where in the resume the support is. A short clause, about ten words: name the project, role or section, and what it shows there. "iHive: Node/Express, 15+ REST endpoints" — not a sentence, not an argument. If nothing supports it, say so in as few words. Never invent an employer, a job title, or a duration; if it is not in the resume, it did not happen.
+4. **tier** — which follows from the evidence you just wrote.
 
 ## The tiers
 
@@ -113,7 +119,12 @@ const RESULT_SCHEMA = {
           requirement: {
             type: "string",
             description:
-              "The requirement in the posting's own words, short enough to read as a tag. No parentheses, no reasoning, no two requirements joined together.",
+              "The requirement in the posting's own words. Taken from the posting, not a theme you invented, and not two requirements joined together.",
+          },
+          label: {
+            type: "string",
+            description:
+              "The same requirement as a tag: the skill, technology or credential itself, one to three words. 'Experience with Java development' becomes 'Java'. No sentence, no parentheses, no explanation.",
           },
           evidence: {
             type: "string",
@@ -126,7 +137,7 @@ const RESULT_SCHEMA = {
             description: "Follows from the evidence written above.",
           },
         },
-        required: ["requirement", "evidence", "tier"],
+        required: ["requirement", "label", "evidence", "tier"],
         additionalProperties: false,
       },
     },
@@ -381,12 +392,16 @@ async function runMatch(jobKey, jobText) {
       entries
         .filter(
           (item) =>
-            item?.requirement &&
+            (item?.label || item?.requirement) &&
             String(item.tier).trim().toLowerCase() === tier
         )
         .slice(0, MAX_SKILLS)
         .map((item) => ({
-          label: String(item.requirement),
+          // The short tag is what shows on screen; the posting's full wording
+          // is kept for the tooltip, and falls back to being the tag if the
+          // short one is somehow missing.
+          label: String(item.label || item.requirement),
+          requirement: item.requirement ? String(item.requirement) : "",
           evidence: item.evidence ? String(item.evidence) : "",
         }));
 

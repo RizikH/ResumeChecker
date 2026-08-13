@@ -160,19 +160,25 @@ function addSkillGroup(heading, skills, modifier) {
   pills.className = "pills";
 
   for (const skill of skills) {
-    // Older saved results stored plain strings; newer ones carry the evidence
-    // behind the judgement alongside the label.
-    const label = typeof skill === "string" ? skill : skill?.label;
-    const evidence = typeof skill === "string" ? "" : skill?.evidence;
+    // Older saved results stored plain strings; newer ones carry the short tag
+    // plus the posting's full wording and the evidence behind the judgement.
+    const isText = typeof skill === "string";
+    const label = isText ? skill : skill?.label;
     if (!label) continue;
 
     const pill = document.createElement("span");
     pill.className = `pill ${modifier}`;
     pill.textContent = label;
 
-    if (evidence) {
+    // The tag stays short enough to scan; hovering gives the requirement as
+    // the posting worded it, and what in the resume decided the tier.
+    const detail = isText
+      ? ""
+      : [skill?.requirement, skill?.evidence].filter(Boolean).join(" — ");
+
+    if (detail) {
       // An attribute, not markup, so there's nothing here to inject into.
-      pill.title = evidence;
+      pill.title = detail;
       pill.classList.add("has-evidence");
     }
 
