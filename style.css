@@ -1,0 +1,434 @@
+:root {
+    /* Colors */
+    --bg: #1A1A19;
+    --bg-surface: #262624;
+    --bg-surface-hover: #30302d;
+    --border: #3a3a37;
+    --border-dashed: #4a4a45;
+    --link: #7aa7e8;
+
+    --bg-skill-strong: #11260f;
+    --bg-skill-weak: #311a00;
+    --bg-skill-missing: #3c0e0e;
+    --font-skill-strong: #0ca30c;
+    --font-skill-weak: #db9300;
+    --font-skill-missing: #ec7e7e;
+
+    --text-primary-color: #f0efec;
+    --text-secondary-color: #c3c2b7;
+    --text-muted-color: #83827a;
+    --error-color: #ec7e7e;
+
+    /* text Size*/
+    --text-primary-size: 13px;
+    --text-secondary-size: 12px;
+    --text-action-size: 15px;
+    --text-score-size: 28px;
+
+    /* Rounding */
+    --rounded: 8px;
+    --rounded-pill: 6px;
+
+    /* Spacing */
+    --gap: 10px;
+    --pad: 18px;
+
+    /* Popup size envelope. Browsers clamp popups to 600px tall — keeping
+       --popup-max-h at or under that avoids a second, outer scrollbar. */
+    --popup-width: 350px;
+    --popup-min-h: 220px;
+    --popup-max-h: 560px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    width: var(--popup-width);
+    min-height: var(--popup-min-h);
+    max-height: var(--popup-max-h);
+    background-color: var(--bg);
+    /* Inherited default — without this, form controls and pills render
+       near-black on the near-black background. */
+    color: var(--text-primary-color);
+    font-family: system-ui, sans-serif;
+    font-size: var(--text-primary-size);
+}
+
+body {
+    margin: 0;
+}
+
+h1 {
+    font-size: var(--text-primary-size);
+    color: var(--text-primary-color);
+    margin: 0;
+    line-height: 1.4;
+}
+
+p {
+    font-size: var(--text-secondary-size);
+    color: var(--text-secondary-color);
+    margin: 0;
+    line-height: 1.4;
+}
+
+/* Load-bearing: the entire screen / sub-state toggle depends on this.
+   !important is deliberate — .screen and .substate set `display: flex` with
+   the same specificity, so without it whichever rule sits later in the file
+   wins and hidden elements stay visible. */
+.hidden {
+    display: none !important;
+}
+
+/* ---------- Scrollbars ---------- */
+
+/* Thin and dark, so scrollable areas don't get the chunky default bar.
+   To remove the bar entirely instead, swap the width below for
+   `display: none` — the area still scrolls by wheel and keyboard. */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--border-dashed);
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}
+
+/* ---------- Layout ---------- */
+
+.screen {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* stretch, not center — children need to fill the width */
+    align-items: stretch;
+    justify-content: center;
+    gap: var(--gap);
+    width: var(--popup-width);
+    min-height: var(--popup-min-h);
+    padding: var(--pad);
+}
+
+.substate {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+    /* Fill the space above the footer, so `.centered` has room to center
+       within. Without this the footer's margin-top:auto absorbs the slack
+       and the spinner sits high. min-height:0 lets the result scroll. */
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+/* Loading and no-job states are centered; everything else is left-aligned. */
+.centered {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* ---------- Form controls ---------- */
+
+input,
+textarea,
+button {
+    /* Form controls ignore inherited fonts by default. */
+    font: inherit;
+    width: 100%;
+    color: var(--text-primary-color);
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--rounded);
+    padding: 9px 11px;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-muted-color);
+}
+
+input:focus,
+textarea:focus,
+button:focus-visible {
+    outline: 1px solid var(--link);
+    outline-offset: 1px;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 90px;
+    font-size: var(--text-secondary-size);
+    line-height: 1.5;
+}
+
+button {
+    /* Sized above body text so the primary action reads as the thing to do,
+       not as another line of copy. .link-button opts back down. */
+    font-size: var(--text-action-size);
+    font-weight: 700;
+    padding: 11px;
+    text-align: center;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--bg-surface-hover);
+}
+
+label {
+    font-size: var(--text-secondary-size);
+    color: var(--text-secondary-color);
+}
+
+.error {
+    font-size: var(--text-secondary-size);
+    color: var(--error-color);
+    margin: 0;
+}
+
+/* ---------- Help link ---------- */
+
+.help-link {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: var(--text-secondary-size);
+    color: var(--link);
+    text-decoration: underline;
+}
+
+.help-link svg {
+    flex: none;
+    width: 12px;
+    height: 12px;
+}
+
+/* ---------- Resume dropzone ---------- */
+
+.dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 22px 12px;
+    border: 1px dashed var(--border-dashed);
+    border-radius: var(--rounded);
+    color: var(--text-muted-color);
+    text-align: center;
+    cursor: pointer;
+}
+
+.dropzone:hover {
+    background-color: var(--bg-surface);
+}
+
+.dropzone svg {
+    width: 20px;
+    height: 20px;
+}
+
+.dropzone p {
+    color: var(--text-muted-color);
+}
+
+/* Hidden from view but still reachable by the label and by JS. */
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+/* ---------- Loading ---------- */
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    color: var(--text-secondary-color);
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .spinner {
+        animation-duration: 3s;
+    }
+}
+
+/* ---------- No job found ---------- */
+
+#state-nojob svg,
+#state-error svg {
+    width: 22px;
+    height: 22px;
+    color: var(--text-secondary-color);
+}
+
+/* The icon and title already signal failure — a full paragraph of red reads
+   as more alarming than a rate limit deserves. */
+#error-detail {
+    color: var(--text-secondary-color);
+}
+
+#fix-key {
+    /* .link-button is left-aligned for the footer; centre it here. */
+    align-self: center;
+    margin-top: 4px;
+}
+
+.state-title {
+    font-size: var(--text-primary-size);
+    font-weight: 700;
+    color: var(--text-primary-color);
+}
+
+/* ---------- Result ---------- */
+
+#state-result {
+    /* The one state that can outgrow the popup — scroll inside it rather
+       than stretching the window. */
+    overflow-y: auto;
+    /* Content starts at the top; only the centered states center. */
+    justify-content: flex-start;
+    gap: 14px;
+    /* Breathing room so content doesn't butt against the scrollbar. */
+    padding-right: 4px;
+}
+
+.score {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    /* relative so the ::after divider below can position against it */
+    position: relative;
+    padding-bottom: 12px;
+}
+
+/* Dividers are pseudo-elements rather than borders so they can be inset
+   from the edges — a border would span the full content width. */
+.score::after,
+.skill-group+.skill-group::before {
+    content: "";
+    display: block;
+    height: 1px;
+    background-color: var(--border);
+    opacity: 0.6;
+}
+
+.score::after {
+    position: absolute;
+    left: 8px;
+    right: 8px;
+    bottom: 0;
+}
+
+.score-value {
+    font-size: var(--text-score-size);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text-primary-color);
+}
+
+.score-label {
+    font-size: var(--text-secondary-size);
+    color: var(--text-secondary-color);
+}
+
+.skill-group {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+/* Between groups only — never above the first one, which already sits under
+   the score's own divider. */
+.skill-group+.skill-group::before {
+    margin: 0 8px 7px;
+}
+
+.skill-heading {
+    font-size: var(--text-secondary-size);
+    font-weight: 700;
+    color: var(--text-primary-color);
+}
+
+.pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.pill {
+    padding: 3px 8px;
+    border-radius: var(--rounded-pill);
+    font-size: var(--text-secondary-size);
+    line-height: 1.4;
+}
+
+.pill-strong {
+    background-color: var(--bg-skill-strong);
+    color: var(--font-skill-strong);
+}
+
+.pill-weak {
+    background-color: var(--bg-skill-weak);
+    color: var(--font-skill-weak);
+}
+
+.pill-missing {
+    background-color: var(--bg-skill-missing);
+    color: var(--font-skill-missing);
+}
+
+/* ---------- Footer ---------- */
+
+footer {
+    display: flex;
+    gap: 14px;
+    margin-top: auto;
+    padding-top: 12px;
+}
+
+.link-button {
+    width: auto;
+    padding: 0;
+    border: none;
+    background: none;
+    font-size: var(--text-secondary-size);
+    font-weight: 400;
+    color: var(--text-muted-color);
+    text-decoration: underline;
+    text-align: left;
+}
+
+.link-button:hover {
+    background: none;
+    color: var(--text-secondary-color);
+}

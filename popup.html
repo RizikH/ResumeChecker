@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="style.css">
+  <!-- Both deferred, so they run in document order: extractor.js defines what
+       popup.js injects into the page. -->
+  <script src="extractor.js" defer></script>
+  <script src="popup.js" defer></script>
+  <title>Resume Match</title>
+</head>
+
+<body>
+
+  <!-- Screen 1: API key.
+       Every screen starts hidden — popup.js reads storage and reveals one,
+       so a returning user never sees this flash before the match screen. -->
+  <section id="screen-apikey" class="screen hidden">
+    <h1>Enter your Claude API key to get started.</h1>
+    <p>It's saved in this browser only, and sent straight to Anthropic, nowhere else.</p>
+
+    <label for="api-key-input" class="visually-hidden">Anthropic API key</label>
+    <input type="password" id="api-key-input" placeholder="sk-ant-..." autocomplete="off" spellcheck="false">
+
+    <button type="button" id="api-key-save">Save key</button>
+    <p id="api-key-error" class="error hidden"></p>
+
+    <!-- TODO: replace href with the real help video URL -->
+    <a href="https://youtu.be/vgncj7MJbVU?si=a8wa2gqyquLfqza7" target="_blank" rel="noopener" class="help-link">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M8 5v14l11-7z" />
+      </svg>
+      Watch how to get a key
+    </a>
+  </section>
+
+  <!-- Screen 2: resume -->
+  <section id="screen-resume" class="screen hidden">
+    <h1>Add your resume so it's ready to compare.</h1>
+
+    <label for="resume-file" class="dropzone">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+        <path d="M17 8l-5-5-5 5" />
+        <path d="M12 3v12" />
+      </svg>
+      <p id="dropzone-label">Click to upload a PDF</p>
+    </label>
+    <input type="file" id="resume-file" accept=".pdf,application/pdf" class="visually-hidden">
+
+    <label for="resume-text" class="visually-hidden">Resume text</label>
+    <textarea id="resume-text" placeholder="Paste your resume here..."></textarea>
+
+    <button type="button" id="resume-save">Save resume</button>
+    <p id="resume-error" class="error hidden"></p>
+
+    <button type="button" id="change-key" class="link-button">Change API key</button>
+
+    <!-- TODO: replace href with the real help video URL -->
+    <a href="#" target="_blank" rel="noopener" class="help-link">
+      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M8 5v14l11-7z" />
+      </svg>
+      Watch how this works
+    </a>
+  </section>
+
+  <!-- Screen 3: the match -->
+  <section id="screen-main" class="screen hidden">
+
+    <!-- 3a -->
+    <div id="state-loading" class="substate centered">
+      <svg class="spinner" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        aria-hidden="true">
+        <path d="M21 12a9 9 0 1 1-6.2-8.6" />
+      </svg>
+      <p>Checking your match...</p>
+    </div>
+
+    <!-- 3b — placeholder content, replaced by popup.js at runtime -->
+    <div id="state-result" class="substate hidden">
+      <div class="score">
+        <span class="score-value">82%</span>
+        <span class="score-label">match</span>
+      </div>
+
+      <div class="skill-group">
+        <span class="skill-heading">Matched skills</span>
+        <div class="pills">
+          <span class="pill pill-strong">React</span>
+          <span class="pill pill-strong">Node</span>
+          <span class="pill pill-strong">C#</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <span class="skill-heading">Weak skills</span>
+        <div class="pills">
+          <span class="pill pill-weak">SQL</span>
+          <span class="pill pill-weak">Docker</span>
+        </div>
+      </div>
+
+      <div class="skill-group">
+        <span class="skill-heading">Missing skills</span>
+        <div class="pills">
+          <span class="pill pill-missing">Angular</span>
+          <span class="pill pill-missing">Azure</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3c -->
+    <div id="state-nojob" class="substate centered hidden">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" aria-hidden="true">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h7" />
+        <path d="M14 2v6h6" />
+        <circle cx="16" cy="16" r="3" />
+        <path d="m21 21-2.5-2.5" />
+      </svg>
+      <span class="state-title">No job description detected.</span>
+      <p>Open a job posting to continue.</p>
+    </div>
+
+    <!-- 3d -->
+    <div id="state-error" class="substate centered hidden">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" aria-hidden="true">
+        <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z" />
+        <path d="M12 9v4" />
+        <path d="M12 17h.01" />
+      </svg>
+      <span class="state-title" id="error-title">Something went wrong.</span>
+      <p id="error-detail"></p>
+      <button type="button" id="fix-key" class="link-button hidden">Update API key</button>
+    </div>
+
+    <footer>
+      <button type="button" id="open-settings" class="link-button">Settings</button>
+      <!-- Lives in the footer, not inside #state-result, because popup.js
+           replaces that element's contents wholesale when rendering. -->
+      <button type="button" id="rerun" class="link-button hidden">Check again</button>
+    </footer>
+  </section>
+
+</body>
+
+</html>

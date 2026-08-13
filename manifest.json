@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Resume Match",
+  "version": "0.1.0",
+  "description": "Compare your resume against the job posting on the current page.",
+
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Resume Match"
+  },
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+
+  "host_permissions": [
+    "https://api.anthropic.com/*"
+  ]
+}
