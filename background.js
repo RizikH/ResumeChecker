@@ -238,10 +238,11 @@ function buildRequest(resume, jobText) {
     max_tokens: 8000,
     thinking: { type: "adaptive" },
     output_config: {
-      // The schema now enforces the order that produced consistent results —
-      // evidence before tier, score last — so less of the work depends on
-      // the model deliberating. If tiers start moving between runs again,
-      // this is the first thing to put back to "medium".
+      // Tested against "medium" once the schema was enforcing the order that
+      // made results consistent — evidence before tier, score last. Results
+      // held, so the structure is doing that work rather than the reasoning
+      // budget. Raising this back is the first thing to try if tiers ever
+      // start moving between runs again.
       effort: "low",
       format: { type: "json_schema", schema: RESULT_SCHEMA },
     },
