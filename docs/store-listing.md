@@ -65,6 +65,17 @@ English
 
 ---
 
+## Single purpose
+
+Chrome requires this and rejects listings whose stated purpose is broad or
+covers several unrelated things. Keep it to one sentence.
+
+```
+Resume Match has one purpose: comparing the user's saved resume against the job posting on the page they are viewing, and showing how well they match.
+```
+
+---
+
 ## Permission justifications
 
 Both stores ask why each permission is needed. Keep these short and literal;
@@ -113,7 +124,15 @@ Answer these consistently with PRIVACY.md. Reviewers do compare them.
 The resume counts as personal information. Declaring it is not optional, and
 under-declaring is the most common reason a listing is rejected.
 
-Privacy policy URL:
+Privacy policy URL — must return a real page, not a 404. Either works:
+
+Direct file on GitHub, no setup needed:
+```
+https://github.com/RizikH/ResumeChecker/blob/main/PRIVACY.md
+```
+
+GitHub Pages, tidier but needs enabling first (repo Settings → Pages →
+Deploy from a branch → main → / root):
 ```
 https://rizikh.github.io/ResumeChecker/PRIVACY
 ```
