@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Compare your resume against the job posting on the current page.",
   "author": "Rizik Haddad",
-  "homepage_url": "https://github.com/RizikH/ResumeMatch",
+  "homepage_url": "https://github.com/RizikH/ResumeChecker",
 
   "icons": {
     "16": "icons/icon16.png",
