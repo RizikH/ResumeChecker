@@ -18,11 +18,12 @@ have, what's thin, and what's missing.
 Resume Match has no subscription and no account. It runs on your own Anthropic
 API key, so you pay Anthropic directly for what you use.
 
-A check costs about **one cent**. Checking several jobs in a row costs less,
-because your resume is only sent once and reused for a few minutes. Opening a
-job you've already checked costs nothing at all — the result is saved.
+A check costs roughly **two to four cents**, depending on how long your resume
+and the job posting are. Checking several jobs in a row costs less, because
+your resume is sent once and reused for a few minutes afterwards. Opening a job
+you've already checked costs nothing at all — the result is saved.
 
-Anthropic's smallest credit purchase is $5, which covers several hundred
+Anthropic's smallest credit purchase is $5, which covers well over a hundred
 checks.
 
 ## Your data

@@ -238,10 +238,11 @@ function buildRequest(resume, jobText) {
     max_tokens: 8000,
     thinking: { type: "adaptive" },
     output_config: {
-      // Was raised to "high" during a cost experiment, when the answer was
-      // small enough that it made no measurable difference. The answer is
-      // much longer now, so the setting costs real time.
-      effort: "medium",
+      // The schema now enforces the order that produced consistent results —
+      // evidence before tier, score last — so less of the work depends on
+      // the model deliberating. If tiers start moving between runs again,
+      // this is the first thing to put back to "medium".
+      effort: "low",
       format: { type: "json_schema", schema: RESULT_SCHEMA },
     },
     messages: [
