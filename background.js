@@ -10,6 +10,13 @@
 const API_URL = "https://api.anthropic.com/v1/messages";
 const MODEL = "claude-sonnet-5";
 const MAX_SKILLS = 8;
+
+// Every entry costs output tokens, and output length is what a check's wait
+// time is made of. Past a dozen, the entries are the least important
+// requirements — and the ones most likely to be invented rather than taken
+// from the posting.
+const MAX_ENTRIES = 12;
+
 const MAX_RUNS = 20;
 
 // A check still marked "running" after this long was interrupted — the browser
@@ -31,7 +38,7 @@ One entry for every requirement the posting states, then a score.
 Work through the posting in order — required qualifications, then preferred ones, then any requirement stated in the responsibilities — and write one entry for each. For each entry, in this order:
 
 1. **requirement** — the posting's own wording, trimmed to a readable label. Take it from the posting; do not invent a theme and do not join two requirements together. "Experience with Java development" is a requirement. "Backend service design with clear contracts" is a theme you made up.
-2. **evidence** — what the resume actually shows for it. Quote it or paraphrase it closely, and name where it appears: a project, a role, the skills list. If nothing supports it, say so plainly. Never invent an employer, a job title, or a duration — if it is not in the resume, it did not happen.
+2. **evidence** — where in the resume the support is. A short clause, about ten words: name the project, role or section, and what it shows there. "iHive: Node/Express, 15+ REST endpoints" — not a sentence, not an argument. If nothing supports it, say so in as few words. Never invent an employer, a job title, or a duration; if it is not in the resume, it did not happen.
 3. **tier** — which follows from the evidence you just wrote.
 
 ## The tiers
@@ -84,7 +91,7 @@ Read back what you wrote and check three things:
 - Every piece of evidence points at something really in the resume. Remove anything you cannot find there.
 - The score sits in the band its entries describe.
 
-Cover every required qualification. Beyond those, spend remaining entries on preferred qualifications and responsibilities in order of importance, up to about ${MAX_SKILLS * 2} entries in total.`;
+Cover every required qualification. Beyond those, spend remaining entries on preferred qualifications and responsibilities in order of importance, up to about ${MAX_ENTRIES} entries in total.`;
 
 // Field order is load-bearing. The answer is written in the order given here,
 // so within each assessment the evidence is written before the tier, and the
@@ -111,7 +118,7 @@ const RESULT_SCHEMA = {
           evidence: {
             type: "string",
             description:
-              "What the resume actually shows for this, quoted or closely paraphrased from it — or a plain statement that nothing in it supports this. Never invent an employer, a duration, or a role.",
+              "A short clause, about ten words, naming where in the resume the support is — the project or section, and what it shows. Or that nothing supports it. Never invent an employer, a duration, or a role.",
           },
           tier: {
             type: "string",
@@ -220,7 +227,10 @@ function buildRequest(resume, jobText) {
     max_tokens: 8000,
     thinking: { type: "adaptive" },
     output_config: {
-      effort: "high",
+      // Was raised to "high" during a cost experiment, when the answer was
+      // small enough that it made no measurable difference. The answer is
+      // much longer now, so the setting costs real time.
+      effort: "medium",
       format: { type: "json_schema", schema: RESULT_SCHEMA },
     },
     messages: [
