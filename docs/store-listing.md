@@ -174,3 +174,22 @@ the context is visible.
 - Exclude `.git`, `docs`, `tools`, `README.md`, `PRIVACY.md`, `LICENSE`
 - Confirm the version in manifest.json is what you intend; store versions can
   never be reused or rolled back
+
+---
+
+## Edge Add-ons differences
+
+Same package and the same copy, with four differences from Chrome:
+
+- **Registration is free** — no $5 fee.
+- **Store logo must be 300x300**: `docs/store/store-logo-300.png`. Chrome takes
+  the 128px icon from the package; Edge asks for this separately.
+- **Permissions are justified in one field**, not one box per permission. Paste
+  the four justifications above as a single block.
+- **Visibility is Public or Hidden** — Hidden is Edge's equivalent of Chrome's
+  Unlisted.
+
+Screenshots are the same 1280x800 files. Privacy policy URL, single purpose,
+description and category are all unchanged.
+
+Dashboard: partner.microsoft.com/dashboard/microsoftedge
