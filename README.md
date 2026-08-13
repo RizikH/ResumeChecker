@@ -79,13 +79,20 @@ the answer straight away. **Check again** runs a fresh check.
 
 ## Which sites work
 
-LinkedIn is supported directly — the extension knows where the description
-sits on the page, including when you click between jobs without the page
-reloading.
+**LinkedIn works best.** The extension is built around it and knows exactly
+where the description sits on the page. Click between jobs in the list and
+open the extension, and it checks whichever job you're looking at — no extra
+step.
 
-Other job sites work through general page reading. This is reliable on a page
-showing a single job. On a page listing many jobs side by side, it may pick up
-the wrong one — open the individual posting first.
+**Other job sites work too.** Dice and Indeed have both been tested and give
+good results, with one thing to know: after moving to a different job on the
+same page, press **Check again**. Those sites often keep the same web address
+when you switch between postings, so the extension can't tell you've moved and
+shows you the previous result. Pressing Check again re-reads the page.
+
+On any site, results are most reliable on a page showing a single job. On a
+page listing many jobs side by side, the extension may pick up the wrong one —
+open the individual posting first.
 
 If nothing usable is found, the extension says so rather than guessing.
 
