@@ -177,6 +177,28 @@ the context is visible.
 
 ---
 
+## Search terms (Edge only)
+
+Up to 7, max 30 characters each. Chrome has no equivalent field.
+
+```
+resume
+job search
+resume match
+job application
+skills gap
+resume analyzer
+job posting
+```
+
+"ATS" is deliberately absent. It is heavily searched, but this extension does
+not simulate applicant tracking system parsing — it compares a resume to one
+posting. Attracting people expecting something else earns bad reviews faster
+than obscurity does. Edge also rejects listings for keyword stuffing and
+irrelevant terms.
+
+---
+
 ## Edge Add-ons differences
 
 Same package and the same copy, with four differences from Chrome:
