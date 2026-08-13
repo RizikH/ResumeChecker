@@ -38,6 +38,7 @@
   <!-- Screen 2: resume -->
   <section id="screen-resume" class="screen hidden">
     <h1>Add your resume so it's ready to compare.</h1>
+    <p id="resume-saved" class="hidden"></p>
 
     <label for="resume-file" class="dropzone">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -143,6 +144,7 @@
       <!-- Lives in the footer, not inside #state-result, because popup.js
            replaces that element's contents wholesale when rendering. -->
       <button type="button" id="rerun" class="link-button hidden">Check again</button>
+      <button type="button" id="reset" class="link-button reset-button">Reset</button>
     </footer>
   </section>
 

@@ -432,3 +432,13 @@ footer {
     background: none;
     color: var(--text-secondary-color);
 }
+
+/* Pushed to the far end, away from the buttons pressed routinely. */
+.reset-button {
+    margin-left: auto;
+}
+
+/* Armed: one more click erases everything. */
+.reset-button.confirming {
+    color: var(--error-color);
+}
