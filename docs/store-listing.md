@@ -19,39 +19,39 @@ Resume Match
 Chrome allows 132 characters, Edge allows 200. This fits both.
 
 ```
-See how well your resume fits the job posting you're looking at. Runs on your own Claude API key. Nothing leaves your device.
+See how well your resume fits the job posting you are viewing. Uses your own Anthropic API key. Data stays on your device.
 ```
 
 ## Detailed description
 
 ```
-Resume Match tells you how well your resume fits the job you're looking at.
+Resume Match shows how well your resume fits the job posting you are viewing.
 
-Open a job posting, click the icon, and it reads the posting from the page and compares it against your resume. You get a match score and three lists: the requirements you clearly meet, the ones where your experience is thin, and the ones you're missing. Hover any item to see which requirement it came from and what in your resume decided it.
+Open a job posting, click the extension icon, and it reads the posting from the page and compares it with your resume. You get a match score and three lists: requirements you meet, requirements where your experience is limited, and requirements you do not meet. Hover over any item to see which requirement it came from and what part of your resume was used to judge it.
 
-WHAT MAKES IT DIFFERENT
+HOW IT IS DIFFERENT
 
-Most resume tools count keywords. This one reads the posting requirement by requirement, notes what in your resume supports each one, and judges on substance — so building REST APIs in .NET counts as C# backend experience even if the posting's exact words never appear in your resume.
+Many resume tools count keywords. This one works through the posting one requirement at a time. For each requirement it records what in your resume supports it, then decides. Building REST APIs in .NET counts as C# backend experience even if the posting never uses those exact words.
 
-YOUR DATA STAYS YOURS
+YOUR DATA STAYS ON YOUR COMPUTER
 
-There is no account, no sign-up, and no server of ours. Your resume and API key are stored on your own device. When you check a job, your resume and that job's description are sent to Anthropic to produce the match, and nowhere else. No analytics, no tracking. The Reset button erases everything the extension has saved.
+There is no account and no sign up, and we run no servers. Your resume and your API key are saved on your own device. When you check a job, your resume and that job description are sent to Anthropic to produce the result. They are not sent anywhere else. There is no tracking and no analytics. The Reset button erases everything the extension has saved.
 
 WHAT YOU NEED
 
-An API key from Anthropic, the company that makes Claude. You can create one at console.anthropic.com. The minimum credit purchase is $5.
+An API key from Anthropic. You can create one at console.anthropic.com. The smallest credit purchase is $5.
 
-Each check costs roughly two to four cents on your own key. Checking several jobs in a row costs less, and reopening a job you've already checked costs nothing.
+Each check costs about one to three cents on your own key. Checking several jobs in a row costs less. Opening a job you have already checked costs nothing.
 
 WHERE IT WORKS
 
-Works best on LinkedIn, including when you click between jobs without the page reloading. Also tested on Indeed and Dice, where you may need to press "Check again" after moving to a different posting — those sites often keep the same web address when you switch jobs.
+LinkedIn, Indeed and Glassdoor are supported directly. On LinkedIn and Indeed the extension follows you as you click between jobs in a list. Glassdoor opens each job in its own tab, which works the same way.
 
-Results are most reliable on a page showing one job. On a page listing many jobs side by side, open the individual posting first.
+Other job sites are read using general page reading. That works best on a page showing a single job. On a page listing several jobs side by side, open the job on its own first.
 
 OPEN SOURCE
 
-The full source is at github.com/RizikH/ResumeChecker, including the privacy policy.
+The source code is available at github.com/RizikH/ResumeChecker, including the privacy policy.
 ```
 
 ## Category

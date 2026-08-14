@@ -94,7 +94,11 @@ function clearError(element) {
 // The parts of a web address that actually name a job. Everything else in a
 // job site's address changes from visit to visit, so keeping it would stop a
 // saved result from ever being recognised again.
-const JOB_ID_PARAMS = ["currentJobId", "jk", "gh_jid", "lever-id"];
+// Indeed uses two: jk on a single posting's own page, vjk on the search page
+// where the description opens in a side panel. Missing vjk meant every job
+// picked from a results list looked like the same page, so the previous
+// result was shown instead of the one on screen.
+const JOB_ID_PARAMS = ["currentJobId", "jk", "vjk", "gh_jid", "lever-id"];
 
 function normalizeJobKey(rawUrl) {
   try {

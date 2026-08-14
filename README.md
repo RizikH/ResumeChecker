@@ -18,7 +18,7 @@ have, what's thin, and what's missing.
 Resume Match has no subscription and no account. It runs on your own Anthropic
 API key, so you pay Anthropic directly for what you use.
 
-A check costs roughly **two to four cents**, depending on how long your resume
+A check costs roughly **one to three cents**, depending on how long your resume
 and the job posting are. Checking several jobs in a row costs less, because
 your resume is sent once and reused for a few minutes afterwards. Opening a job
 you've already checked costs nothing at all — the result is saved.
@@ -80,22 +80,22 @@ the answer straight away. **Check again** runs a fresh check.
 
 ## Which sites work
 
-**LinkedIn works best.** The extension is built around it and knows exactly
-where the description sits on the page. Click between jobs in the list and
-open the extension, and it checks whichever job you're looking at — no extra
-step.
+**LinkedIn, Indeed and Glassdoor are supported directly.** The extension knows
+exactly where the description sits on those pages. On LinkedIn and Indeed you
+can click between jobs in a list and it checks whichever one you're looking at,
+with no extra step. Glassdoor opens each job in its own tab, which works the
+same way.
 
-**Other job sites work too.** Dice and Indeed have both been tested and give
-good results, with one thing to know: after moving to a different job on the
-same page, press **Check again**. Those sites often keep the same web address
-when you switch between postings, so the extension can't tell you've moved and
-shows you the previous result. Pressing Check again re-reads the page.
+**Other job sites work through general page reading.** This is reliable on a
+page showing a single job. On a page listing many jobs side by side, the
+extension may pick up the wrong one, so open the individual posting first.
 
-On any site, results are most reliable on a page showing a single job. On a
-page listing many jobs side by side, the extension may pick up the wrong one —
-open the individual posting first.
+If a site keeps the same web address when you switch between postings, the
+extension can't tell you've moved and will show you the previous result. Press
+**Check again** to re-read the page.
 
-If nothing usable is found, the extension says so rather than guessing.
+If nothing on the page looks like a job description, the extension says so
+rather than guessing, and no request is made.
 
 ## Project layout
 

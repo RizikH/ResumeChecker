@@ -12,6 +12,7 @@
 // Anything not listed falls back to reading the whole page.
 const SITE_RULES = [
   { match: "linkedin.com", selector: '[id^="JobDetails_AboutTheJob_"]' },
+  { match: "indeed.com", selector: '[id^="jobDescriptionText"]' },
 ];
 
 function extractJobDescription(rules) {
