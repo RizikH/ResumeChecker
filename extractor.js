@@ -32,6 +32,28 @@ function extractJobDescription(rules) {
     return typeof text === "string" && tidy(text).length >= MIN_CHARS;
   }
 
+  // Any long page passes a length check — a README, a documentation page, a
+  // news article. Job postings are recognisable by the language they use, so
+  // pages that read like something else are turned away before a paid check
+  // is started.
+  //
+  // Each group is one idea worded several ways; two different groups have to
+  // appear, so a single stray word is not enough.
+  function looksLikeJob(text) {
+    const groups = [
+      /\b(responsibilit|what you.ll do|day to day|in this role)/i,
+      /\b(qualification|requirement|must have|nice to have|you.ll need)/i,
+      /\b(years? of experience|experience (with|in)|proficien|familiarity with)/i,
+      /\b(salary|compensation|pay range|benefits|401\(?k\)?|paid time off)/i,
+      /\b(apply|application|candidate|applicant|hiring|recruit)/i,
+      /\b(full[- ]time|part[- ]time|contract|internship|remote|hybrid|on[- ]site)/i,
+      /\b(we are looking|we're looking|join (our|the) team|about (the|this) role)/i,
+      /\b(equal opportunity|eeo|visa|work authorization)/i,
+    ];
+
+    return groups.filter((re) => re.test(text)).length >= 2;
+  }
+
   // Readability takes the page apart as it works. It must always be given a
   // copy, never the real page, or the user watches their page fall apart in
   // front of them.
@@ -71,6 +93,11 @@ function extractJobDescription(rules) {
   }
 
   if (!usable(text)) return null;
+
+  // A site rule means the exact part of the page holding a job description was
+  // found, so the content is trusted. Everything else came from reading a
+  // whole page and has to look like a posting before it costs anything.
+  if (!element && !looksLikeJob(text)) return null;
 
   return {
     text: tidy(text).slice(0, MAX_CHARS),
